@@ -51,6 +51,10 @@ endif()
 include_directories(${Eigen_INCLUDE_DIR})
 SET(KDL_CFLAGS "${KDL_CFLAGS} -I${Eigen_INCLUDE_DIR}")
 
+# We need shared_ptr from boost since not all compilers are c++11 capable
+find_package(Boost REQUIRED)
+include_directories(${Boost_INCLUDE_DIRS})
+
 INCLUDE (${PROJ_SOURCE_DIR}/config/DependentOption.cmake)
 
 OPTION(ENABLE_TESTS OFF "Enable building of tests")

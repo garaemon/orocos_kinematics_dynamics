@@ -29,6 +29,9 @@ INSTALL(TARGETS orocos-kdl
   LIBRARY DESTINATION lib
   PUBLIC_HEADER DESTINATION include/kdl
 )
+TARGET_LINK_LIBRARIES(orocos-kdl ${Boost_LIBRARIES})
+
+INSTALL_TARGETS( /lib orocos-kdl)
 
 # CMake 2.2:
 #INSTALL_FILES( /include/kdl FILES ${KDL_HPPS})

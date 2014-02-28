@@ -25,35 +25,42 @@
 #include "segment.hpp"
 #include "chain.hpp"
 
+#include <boost/shared_ptr.hpp>
 #include <string>
 #include <map>
 
+
 namespace KDL
 {
-    //Forward declaration
+    //We use smart pointers for managing tree nodes for now becuase
+    //c++11 and unique_ptr support is not ubiquitous
     class TreeElement;
-    typedef std::map<std::string,TreeElement> SegmentMap;
+    typedef boost::shared_ptr<TreeElement> TreeElementPtr;
+    typedef boost::shared_ptr<const TreeElement> TreeElementConstPtr;
+    typedef std::map<std::string, TreeElementPtr> SegmentMap;
 
     class TreeElement
     {
-    private:
-        TreeElement(const std::string& name):segment(name), q_nr(0)
-        {};
     public:
+        TreeElement(const Segment& segment_in,const SegmentMap::const_iterator& parent_in,unsigned int q_nr_in):
+            segment(segment_in),
+            q_nr(q_nr_in),
+            parent(parent_in)
+        {};
+
+        static TreeElementPtr Root(const std::string& root_name)
+        {
+            return TreeElementPtr(new TreeElement(root_name));
+        };
+
         Segment segment;
         unsigned int q_nr;
         SegmentMap::const_iterator  parent;
         std::vector<SegmentMap::const_iterator > children;
-        TreeElement(const Segment& segment_in,const SegmentMap::const_iterator& parent_in,unsigned int q_nr_in)
-        {
-			q_nr=q_nr_in;
-            segment=segment_in;
-            parent=parent_in;
-        };
-        static TreeElement Root(const std::string& root_name)
-        {
-            return TreeElement(root_name);
-        };
+
+    private:
+        TreeElement(const std::string& name):segment(name), q_nr(0) {};
+        TreeElement(const TreeElement& other);  //No Copying
     };
 
     /**
